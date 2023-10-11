@@ -46,7 +46,7 @@ jobs:
       - checkout
       - run:
           name: Heroku Container Push
-          Command:
+          Command: |
             heroku container:login
             heroku container:push web -a senzen-su-devops
             heroku container:release web -a senzen-su-devops
