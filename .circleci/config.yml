@@ -51,7 +51,6 @@ jobs:
             heroku container:push web -a senzen-su-devops
             heroku container:release web -a senzen-su-devops
 
-
 workflows:
   simple_workflow:
     jobs:
@@ -63,4 +62,5 @@ workflows:
           requires:
             - test
       - deploy:
-      
+          requires:
+            - build-and-push
