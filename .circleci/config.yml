@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@5.0.1
+  docker: circleci/docker@2.1.4
 jobs:
   build:
     docker:
@@ -22,6 +23,18 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
+  build-and-push:
+    executor: docker/docker #State the environent that we're use
+    steps:
+      - setup_remote_docker #This allows use to run docker commnads just in case
+      - checkout
+      - docker/check
+      - docker/build:
+          image: senzen/education-space 
+          tag: latest
+      - docker/push:
+          image: senzen/education-space
+          tag: latest
 
 workflows:
   simple_workflow:
@@ -30,3 +43,6 @@ workflows:
       - test:
           requires:
             - build
+      - build-and-push
+          requires:
+            - test
