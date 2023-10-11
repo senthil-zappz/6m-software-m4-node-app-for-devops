@@ -2,12 +2,11 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.1
   docker: circleci/docker@2.1.4
-  heroku: circleci/heroku@2.0
-
+  heroku: circleci/heroku@2.0.0
 jobs:
   build:
     docker:
-      - image: cimg/node:16.10
+      - image: 'cimg/node:16.10'
     steps:
       - checkout
       - node/install-packages:
@@ -17,7 +16,7 @@ jobs:
           npm install
   test:
     docker:
-      - image: cimg/node:16.10
+      - image: 'cimg/node:16.10'
     steps:
       - checkout
       - node/install-packages:
@@ -26,31 +25,28 @@ jobs:
           echo "Running tests..."
           npm run test
   build-and-push:
-    executor: docker/docker #State the environent that we're use
+    executor: docker/docker
     steps:
-      - setup_remote_docker #This allows use to run docker commnads just in case
+      - setup_remote_docker
       - checkout
       - docker/check
       - docker/build:
-          image: senzen/education-space 
-          tag: 1.0.2
+          image: senzen/education-space
       - docker/push:
           image: senzen/education-space
-          tag: 1.02
   deploy:
     docker:
-      - image: cimg/node:16.10
+      - image: 'cimg/node:16.10'
     steps:
       - setup_remote_docker
       - heroku/install
       - checkout
       - run:
           name: Heroku Container Push
-          Command: |
+          command: |
             heroku container:login
             heroku container:push web -a senzen-su-devops
             heroku container:release web -a senzen-su-devops
-
 workflows:
   simple_workflow:
     jobs:
@@ -64,4 +60,3 @@ workflows:
       - deploy:
           requires:
             - build-and-push
-
